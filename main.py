@@ -4,6 +4,8 @@ import re
 import glob
 # from playsound import playsound
 
+print("Hola")
+print(glob.glob('*'))
 files = glob.glob('pdfs/*[!_backup].pdf')
 print(files)
 
