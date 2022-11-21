@@ -2,7 +2,14 @@ from pdfreader import SimplePDFViewer
 from gtts import gTTS
 import re
 import glob
+from itertools import cycle
 # from playsound import playsound
+
+def digito_verificador(rut):
+    reversed_digits = map(int, reversed(str(rut)))
+    factors = cycle(range(2, 8))
+    s = sum(d * f for d, f in zip(reversed_digits, factors))
+    return (-s) % 11
 
 print("Hola")
 print(glob.glob('*'))
@@ -48,6 +55,19 @@ for f in files:
             ", procedencia " + values[9] + 
             ", doctor " + values[11])
     to_read.append([f[5:], texto])
+
+    # Check for the last digit to confirm if it is correct
+    dv = str(digito_verificador(values[6][:-2]))
+    if dv == "10":
+        dv = "K"
+
+    # Capitalize the letter k
+    values[6] = values[6].upper()
+
+    if dv == values[6][-1]:
+        print("RUT " + values[6] + " OK")
+    else:
+        print("RUT " + values[6] + " OJO CON ESTE RUT, debería ser -" + dv)
 
 print(to_read)
 
