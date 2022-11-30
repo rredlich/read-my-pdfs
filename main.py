@@ -20,7 +20,7 @@ def check_regex(match):
 
 print("Hola")
 print(glob.glob('*'))
-files = glob.glob('pdfs/*[!_backup].pdf')
+files = glob.glob('pdfs/*pdf')
 print(files)
 
 # Read each pdf file and parse it to get some values and store it as a string
@@ -46,13 +46,13 @@ for f in files:
 
     values.append(check_regex(re.search("Informe No\s*:\s*([0-9]+-[0-9]+)", plain_text, re.IGNORECASE)))
     values.append(check_regex(re.search("Fol\.Externo\s*:\s*([0-9]+)", plain_text, re.IGNORECASE)))
-    values.append(check_regex(re.search("NOMBRE\s*:\s*(.*)Edad :", plain_text, re.IGNORECASE)))
+    values.append(check_regex(re.search("NOMBRE\s*:\s*(.*?)Edad", plain_text, re.IGNORECASE)))
     values.append(check_regex(re.search("Edad\s*:\s*([0-9]+)", plain_text, re.IGNORECASE)))
     values.append(check_regex(re.search("Rut\s*:\s*([0-9]+-[0-9kK])", plain_text, re.IGNORECASE)))
     values.append(check_regex(re.search("F.Recep.\s*:\s*([0-9]+-[0-9]+-[0-9]+)", plain_text, re.IGNORECASE)))
     values.append(check_regex(re.search("F.Entrega.\s*:\s*([0-9]+-[0-9]+-[0-9]+)", plain_text, re.IGNORECASE)))
     values.append(check_regex(re.search("Procedencia\s*:\s*(.*)DR\. \(A\)", plain_text, re.IGNORECASE)))
-    values.append(check_regex(re.search("DR\. \(A\)\s*:\s*(.*)Muestra ", plain_text, re.IGNORECASE)))
+    values.append(check_regex(re.search("DR\. \(A\)\s*:\s*(.*?)Muestra", plain_text, re.IGNORECASE)))
     
     texto = (f[5:] + 
             ", Informe número " + values[0] + 
