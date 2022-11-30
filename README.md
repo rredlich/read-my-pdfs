@@ -11,5 +11,5 @@ Small script that read values from pdfs to help on crosschecking. The script:
 
 # Create an executable
 ```bash
-pyinstall main.py
+pyinstaller main.py
 ```
