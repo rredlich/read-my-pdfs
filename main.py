@@ -11,6 +11,13 @@ def digito_verificador(rut):
     s = sum(d * f for d, f in zip(reversed_digits, factors))
     return (-s) % 11
 
+def check_regex(match):
+    if match:
+            return match.group(1)
+    else:
+            return "No"
+
+
 print("Hola")
 print(glob.glob('*'))
 files = glob.glob('pdfs/*[!_backup].pdf')
@@ -35,39 +42,42 @@ for f in files:
 
     plain_text = "".join(viewer.canvas.strings)
 
-    values = re.split(("(?:Informe No : ([0-9]+-[0-9]+))\s+?"
-                            "(?:Fol\.Externo:([0-9]+))\s+?"
-                            "(?:NOMBRE : ((\w+\s?)+)Edad)"
-                            "(?: :([0-9]+))\s+?"
-                            "(?:Rut :([0-9]+-[0-9kK]))\s+?"
-                            "(?:F.Recep.:([0-9]+-[0-9]+-[0-9]+))\s+?"
-                            "(?:F.Entrega.:([0-9]+-[0-9]+-[0-9]+))\s+?"
-                            "(?:Procedencia :\s+?((\w+\s?)+)DR. \(A\) )"
-                            "(?:: ((\w+\s?)+)Muestra)"), plain_text)
+    values = []
+
+    values.append(check_regex(re.search("Informe No\s*:\s*([0-9]+-[0-9]+)", plain_text, re.IGNORECASE)))
+    values.append(check_regex(re.search("Fol\.Externo\s*:\s*([0-9]+)", plain_text, re.IGNORECASE)))
+    values.append(check_regex(re.search("NOMBRE\s*:\s*(.*)Edad :", plain_text, re.IGNORECASE)))
+    values.append(check_regex(re.search("Edad\s*:\s*([0-9]+)", plain_text, re.IGNORECASE)))
+    values.append(check_regex(re.search("Rut\s*:\s*([0-9]+-[0-9kK])", plain_text, re.IGNORECASE)))
+    values.append(check_regex(re.search("F.Recep.\s*:\s*([0-9]+-[0-9]+-[0-9]+)", plain_text, re.IGNORECASE)))
+    values.append(check_regex(re.search("F.Entrega.\s*:\s*([0-9]+-[0-9]+-[0-9]+)", plain_text, re.IGNORECASE)))
+    values.append(check_regex(re.search("Procedencia\s*:\s*(.*)DR\. \(A\)", plain_text, re.IGNORECASE)))
+    values.append(check_regex(re.search("DR\. \(A\)\s*:\s*(.*)Muestra ", plain_text, re.IGNORECASE)))
+    
     texto = (f[5:] + 
-            ", Informe número " + values[1] + 
-            ", Folio externo " + values[2] + 
-            ", Nombre " + values[3] + 
-            ", edad " + values[5] + 
-            ", rut " + values[6] + 
-            ", fecha de recepción " + values[7] + 
-            ", fecha de entrega " + values[8] + 
-            ", procedencia " + values[9] + 
-            ", doctor " + values[11])
+            ", Informe número " + values[0] + 
+            ", Folio externo " + values[1] + 
+            ", Nombre " + values[2] + 
+            ", edad " + values[3] + 
+            ", rut " + values[4] + 
+            ", fecha de recepción " + values[5] + 
+            ", fecha de entrega " + values[6] + 
+            ", procedencia " + values[7] + 
+            ", doctor " + values[8])
     to_read.append([f[5:], texto])
 
     # Check for the last digit to confirm if it is correct
-    dv = str(digito_verificador(values[6][:-2]))
+    dv = str(digito_verificador(values[4][:-2]))
     if dv == "10":
         dv = "K"
 
     # Capitalize the letter k
-    values[6] = values[6].upper()
+    values[6] = values[4].upper()
 
-    if dv == values[6][-1]:
-        print("RUT " + values[6] + " OK")
+    if dv == values[4][-1]:
+        print("RUT " + values[4] + " OK")
     else:
-        print("RUT " + values[6] + " OJO CON ESTE RUT, debería ser -" + dv)
+        print("RUT " + values[4] + " OJO CON ESTE RUT, debería ser -" + dv)
 
 print(to_read)
 
